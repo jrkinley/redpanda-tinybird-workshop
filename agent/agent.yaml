@@ -1,0 +1,10 @@
+create_topics: true
+source:
+  name: "source"
+  bootstrap_servers: 172.24.1.10:9092
+  topics:
+    - gtfs_mta_subway
+    - gtfs_mta_subway_enriched
+destination:
+  name: "destination"
+  bootstrap_servers: 172.24.1.20:9092

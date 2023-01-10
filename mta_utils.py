@@ -37,9 +37,8 @@ def parse_entity(entity, enrich=False, ref=None):
     if enrich:
         trip["route_long_name"] = ref.lookup_route(tu.trip.route_id, "route_long_name")
     # trip["start_time"] = tu.trip.start_time
-    trip_start_date = dt.strptime(tu.trip.start_date, "%Y%m%d").strftime("%Y-%m-%d")
-    trip_start_time = tu.trip.start_time
-    trip["start_date"] = f"{trip_start_date} {trip_start_time}"
+    start_date = dt.strptime(tu.trip.start_date, "%Y%m%d").strftime("%Y-%m-%d")
+    trip["start_date"] = f"{start_date} {tu.trip.start_time}"
     trip_update["trip"] = trip
 
     updates = []

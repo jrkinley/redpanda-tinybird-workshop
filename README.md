@@ -13,6 +13,7 @@ Here you'll find the code used for the [Streaming Data at the Edge](https://go.r
 ```shell
 # Spin up EC2 instances
 # Use ARM-based (Graviton2) instances (e.g. c6g.medium)
+ssh -i <Key pair name>.pem ec2-user@<Public IPv4 address>
 
 # Install git and clone the workshop repo
 sudo yum update -y
@@ -34,8 +35,9 @@ sudo chown root:ec2-user /usr/bin/redpanda-edge-agent
 sudo chmod 770 /usr/bin/redpanda-edge-agent
 
 # Configure the Agent
-vim /etc/redpanda/agent.yaml
+sudo vim /etc/redpanda/agent.yaml
 
+    id: "nyct-gtfs"
     create_topics: true
     source:
       name: "redpanda-device"
@@ -57,6 +59,7 @@ sudo mkdir /var/log/redpanda
 sudo chown root:ec2-user /var/log/redpanda
 sudo chmod 770 /var/log/redpanda
 nohup redpanda-edge-agent -config /etc/redpanda/agent.yaml -loglevel debug &> /var/log/redpanda/redpanda-edge-agent.log &
+tail -100f /var/log/redpanda/redpanda-edge-agent.log
 
 # Connect to the MTA Realtime Feeds
 python3 -m venv env
@@ -68,6 +71,27 @@ python mta_subway_produce.py \
   --topic gtfs_mta_subway \
   --feed https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-ace \
   --api_key ...
+
+# https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs
+# https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-bdfm
+# https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-ace
+# https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-nqrw
+```
+
+## Console Filters
+
+```javascript
+// Broadway Express Route
+return value.trip.route_id == "Q"
+
+// Has train stopped at Lexington Av?
+var stopped = false
+for (const update of value.updates) {
+    if (update.stop_id == "B08S") {
+        stopped = true
+    }
+}
+return stopped
 ```
 
 ## Reference Data

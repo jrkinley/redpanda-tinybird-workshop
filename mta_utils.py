@@ -39,7 +39,7 @@ def parse_entity(entity, enrich=False, ref=None):
     # trip["start_time"] = tu.trip.start_time
     start_date = dt.strptime(tu.trip.start_date, "%Y%m%d").strftime("%Y-%m-%d")
     if tu.trip.start_time != "":
-        start_date += " " + start_date
+        start_date += " " + tu.trip.start_time
     trip["start_date"] = start_date
     trip_update["trip"] = trip
 
